@@ -6,7 +6,7 @@ using System.Linq;
 namespace Game {
   class Program {
     static void Main(string[] args) {
-      Game.Instance.Start();
+    new Game().Start();
     }
   }
 }

@@ -48,6 +48,8 @@
     <Compile Include="Interfaces\IAnimated.cs" />
     <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="Interfaces\IMovable.cs" />
+    <Compile Include="Lib\ObjectCollision.cs" />
+    <Compile Include="Lib\ObjectRegistry.cs" />
     <Compile Include="Lib\CollisionDetector.cs" />
     <Compile Include="Lib\Coordinate.cs" />
     <Compile Include="Moveables\Block.cs" />

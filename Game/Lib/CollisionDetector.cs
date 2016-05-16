@@ -9,25 +9,15 @@ namespace Game {
   /// Represents a map coordinate
   /// </summary>
   class CollisionDetector {
+    
+    public static ObjectCollision Detect(IObject obj) {
+      IObject target = ObjectRegistry.Instance.GameObjects.FirstOrDefault(c => c != obj && obj.GetX() == c.GetX() && obj.GetY() == c.GetY());
 
-    private List<IObject> _GameObjects = new List<IObject>();
-
-    public void RegisterObj(IObject obj) {
-      if(!_GameObjects.Contains(obj)) {
-        _GameObjects.Add(obj);
-      }
-    }
-
-    public List<IObject> Detect() {
-      foreach(IObject obj in _GameObjects) {
-        IObject selected = _GameObjects.FirstOrDefault(c => c != obj && obj.GetX() == c.GetX() && obj.GetY() == c.GetY());
-
-        if(selected != null) {
-          return new List<IObject>() { obj, selected };
-        }
+      if(target != null) {
+        return new ObjectCollision() { Subject = obj, Target = target };
       }
 
-      return new List<IObject>();
+      return null;
     }
   }
 }

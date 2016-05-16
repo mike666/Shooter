@@ -11,6 +11,9 @@ namespace Game {
       SetGraphic("->");
     }
 
+    public override void Render() {
+    }
+
     protected override List<string> GetMoveCommands() {
       string commands = "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR";
 

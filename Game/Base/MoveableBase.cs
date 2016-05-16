@@ -21,10 +21,11 @@ namespace Game {
 
         WritePos(_X, _Y);
 
-        List<IObject> collidedObjects = Game.Instance.CollisionDetector.Detect();
+        ObjectCollision collision = CollisionDetector.Detect(this);
 
-        if (collidedObjects.Count > 0) {
-          collidedObjects.ForEach(c => c.Clear());
+        if (collision != null) {
+          collision.Target.Clear();
+          ObjectRegistry.Instance.RemoveObj(collision.Target);
         }
       }
     }

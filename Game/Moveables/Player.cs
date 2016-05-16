@@ -14,7 +14,7 @@ namespace Game {
 
       _Bullet = new Bullet(_X + Graphic.Length, _Y);
 
-      Game.Instance.CollisionDetector.RegisterObj(_Bullet);
+      ObjectRegistry.Instance.RegisterObj(_Bullet);
     }
 
     public void Fire() {

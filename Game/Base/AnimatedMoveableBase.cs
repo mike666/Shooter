@@ -43,7 +43,7 @@ namespace Game {
         }
                 
         if (redraw) {
-          Game.Instance.Redraw();
+          ObjectRegistry.Instance.Redraw();
         }
 
         System.Threading.Thread.Sleep(speed);
