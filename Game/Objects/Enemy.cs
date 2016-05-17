@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Game {
-  interface IAnimated {
-    void Animate(int speed, bool repeat, bool redraw);
-    bool IsAnimating();
-    void Stop();
-  }   
+  class Enemy : ObjectBase {
+    
+    public Enemy(int x, int y) : base(x, y) {
+      SetGraphic(":(");
+    }
+  }
 }

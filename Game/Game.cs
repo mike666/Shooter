@@ -24,9 +24,12 @@ namespace Game {
     /// </summary>
     public void InitGame() {
       SetBackgroundColor();
-            
-      _Player = new Player(0, 0);
-      
+
+      AnimatedObjectBase projectile = new RightAnimate(new Bullet(0, 0));
+
+      _Player = new Player(projectile, 0, 0);
+
+      ObjectRegistry.Instance.RegisterObj(projectile);
       ObjectRegistry.Instance.RegisterObj(new Enemy(50, 5));
       ObjectRegistry.Instance.RegisterObj(new Block(25, 10));
       ObjectRegistry.Instance.RegisterObj(new Block(25, 15));
@@ -71,10 +74,6 @@ namespace Game {
       }));
 
       playerThread.Start();
-    
-        //_Enemy1.Animate(100, true, true);
-
-      
     }
 
     private void SetBackgroundColor() {

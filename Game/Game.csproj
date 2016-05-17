@@ -43,30 +43,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animated\RightAnimate.cs" />
+    <Compile Include="Base\AnimatedObjectBase.cs" />
     <Compile Include="Base\ObjectBase.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Interfaces\IAnimated.cs" />
+    <Compile Include="Interfaces\IAnimatedObject.cs" />
     <Compile Include="Interfaces\IObject.cs" />
-    <Compile Include="Interfaces\IMovable.cs" />
     <Compile Include="Lib\ObjectCollision.cs" />
     <Compile Include="Lib\ObjectRegistry.cs" />
     <Compile Include="Lib\CollisionDetector.cs" />
     <Compile Include="Lib\Coordinate.cs" />
-    <Compile Include="Moveables\Block.cs" />
-    <Compile Include="Moveables\Bullet.cs" />
-    <Compile Include="Moveables\Player.cs" />
-    <Compile Include="Moveables\Enemy.cs" />
-    <Compile Include="Base\AnimatedMoveableBase.cs" />
-    <Compile Include="Base\MoveableBase.cs" />
+    <Compile Include="Objects\Block.cs" />
+    <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Objects\Player.cs" />
+    <Compile Include="Objects\Enemy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Animators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
