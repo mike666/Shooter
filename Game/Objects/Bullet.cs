@@ -10,8 +10,5 @@ namespace Game {
     public Bullet(int x, int y) : base(x, y) {
       SetGraphic("->");
     }
-
-    public override void Render() {
-    }
   }
 }

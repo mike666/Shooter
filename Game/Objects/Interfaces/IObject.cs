@@ -11,9 +11,6 @@ namespace Game {
 
     void SetPos(int x, int y);
     void SetGraphic(string graphic);
-    void Render();
-    void Move(int x, int y);
-    bool CanMove(int x, int y);
-    void Clear();
+    string GetGraphic();
   }
 }

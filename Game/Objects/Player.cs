@@ -7,16 +7,21 @@ using System.Threading.Tasks;
 
 namespace Game {
   class Player : ObjectBase {
-    private AnimatedObjectBase _Projectile;
+    private IObject _Projectile;
 
-    public Player(AnimatedObjectBase projectile, int x, int y) : base(x, y) {
+    public Player(IObject projectile, int x, int y) : base(x, y) {
       SetGraphic(":)");
 
       _Projectile = projectile;
     }
 
-    public void Fire() {
-      if(_Projectile.IsAnimating()) {
+    public IObject Fire() {
+      _Projectile.SetPos(_X + Graphic.Length, _Y);
+
+      return _Projectile;
+
+      /*
+      if (_Projectile.IsAnimating()) {
         return;
       }
 
@@ -26,7 +31,7 @@ namespace Game {
         _Projectile.Animate();
       }));
 
-      thread.Start();
+      thread.Start();*/
     }
     
   }

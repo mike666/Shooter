@@ -27,24 +27,15 @@ namespace Game {
     }
 
     public void RegisterObj(IObject obj) {
-      if(!_GameObjects.Contains(obj)) {
+      if(obj != null && !_GameObjects.Contains(obj)) {
         _GameObjects.Add(obj);
       }
     }
 
     public void RemoveObj(IObject obj) {
-      if (_GameObjects.Contains(obj)) {
+      if (obj != null &&_GameObjects.Contains(obj)) {
         _GameObjects.Remove(obj);
       }
     }
-
-    public void Redraw() {
-      Console.Clear();
-
-      foreach (IObject obj in _GameObjects) {
-        obj.Render();
-      }
-    }
-
   }
 }

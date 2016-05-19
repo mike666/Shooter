@@ -7,80 +7,101 @@ using System.Threading.Tasks;
 
 namespace Game {
   class Game {
-        
+
     private Player _Player = null;
-                      
+
     public Game() {
-    
+
     }
 
     public void Start() {
       InitGame();
     }
-        
+
     /// <summary>`
     /// Initiates the game by painting the background
     /// and initiating the hero
     /// </summary>
     public void InitGame() {
-      SetBackgroundColor();
+      ConsoleCanvas canvas = new ConsoleCanvas();
 
-      AnimatedObjectBase projectile = new RightAnimate(new Bullet(0, 0));
+      IAnimator rightAnimator = new RightAnimator();
+      IAnimator leftAnimator = new LeftAnimator();
 
-      _Player = new Player(projectile, 0, 0);
+      IObject projectile = new Bullet(0, 0);
+      Player player = new Player(projectile, 0, 0);
 
-      ObjectRegistry.Instance.RegisterObj(projectile);
-      ObjectRegistry.Instance.RegisterObj(new Enemy(50, 5));
-      ObjectRegistry.Instance.RegisterObj(new Block(25, 10));
-      ObjectRegistry.Instance.RegisterObj(new Block(25, 15));
-      ObjectRegistry.Instance.RegisterObj(new Block(25, 17));
-      ObjectRegistry.Instance.RegisterObj(_Player);
+      IObject enemy = new Enemy(50, 5);
+      IObject block1 = new Block(25, 10);
+      IObject block2 = new Block(25, 15);
+      IObject block3 = new Block(25, 17);
+            
+      ObjectRegistry.Instance.RegisterObj(player);
+      ObjectRegistry.Instance.RegisterObj(enemy);
+      ObjectRegistry.Instance.RegisterObj(block1);
+      ObjectRegistry.Instance.RegisterObj(block2);
+      ObjectRegistry.Instance.RegisterObj(block3);
 
-      foreach (IObject obj in ObjectRegistry.Instance.GameObjects) {
-        obj.Render();
-      }
+      canvas.RenderObj(player);
+      canvas.RenderObj(enemy);
+      canvas.RenderObj(block1);
+      canvas.RenderObj(block2);
+      canvas.RenderObj(block3);
 
-      Thread playerThread = new Thread(new ThreadStart(() => {
-       
-        ConsoleKeyInfo keyInfo;
-        while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
-          switch (keyInfo.Key) {
-            case ConsoleKey.UpArrow:
-              ObjectRegistry.Instance.Redraw();
-              _Player.Move(0, -1);
-              break;
-
-            case ConsoleKey.RightArrow:
-              ObjectRegistry.Instance.Redraw();
-              _Player.Move(1, 0);
-              break;
-
-            case ConsoleKey.DownArrow:
-              ObjectRegistry.Instance.Redraw();
-              _Player.Move(0, 1);
-              break;
-
-            case ConsoleKey.LeftArrow:
-              ObjectRegistry.Instance.Redraw();
-              _Player.Move(-1, 0);
-              break;
-            case ConsoleKey.Spacebar:
-              ObjectRegistry.Instance.Redraw();
-              _Player.Fire();
-              break;
-          }
-        }
-
+      Thread enemyThread = new Thread(new ThreadStart(() => {
+        leftAnimator.Animate(canvas, enemy, 300);
       }));
 
-      playerThread.Start();
-    }
+      enemyThread.Start();
 
-    private void SetBackgroundColor() {
-      Console.BackgroundColor = ConsoleColor.White;
-      Console.ForegroundColor = ConsoleColor.Black;
-      Console.Clear(); //Important!
-    }
 
+      ConsoleKeyInfo keyInfo;
+      while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
+        switch (keyInfo.Key) {
+          case ConsoleKey.UpArrow:
+            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            canvas.MoveObj(player, 0, -1);
+            break;
+
+          case ConsoleKey.RightArrow:
+            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            canvas.MoveObj(player, 1, 0);
+            break;
+
+          case ConsoleKey.DownArrow:
+            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            canvas.MoveObj(player, 0, 1);
+            break;
+
+          case ConsoleKey.LeftArrow:
+            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            canvas.MoveObj(player, -1, 0);
+            break;
+          case ConsoleKey.Spacebar:
+            if (rightAnimator.IsAnimating()) {
+              break;
+            }
+
+            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            
+            
+            Thread projectileThread = new Thread(new ThreadStart(() => {
+              IObject bullet = player.Fire();
+
+              ObjectRegistry.Instance.RegisterObj(bullet);
+
+              if (!rightAnimator.IsAnimating()) {
+                rightAnimator.Animate(canvas, bullet, 10);
+              }
+
+              ObjectRegistry.Instance.RemoveObj(bullet);
+            }));
+
+            projectileThread.Start();
+
+            break;
+        }
+      }
+    }
   }
 }
