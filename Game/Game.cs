@@ -47,14 +47,9 @@ namespace Game {
       canvas.RenderObj(block1);
       canvas.RenderObj(block2);
       canvas.RenderObj(block3);
-
-      Thread enemyThread = new Thread(new ThreadStart(() => {
-        leftAnimator.Animate(canvas, enemy, 300);
-      }));
-
-      enemyThread.Start();
-
-
+      
+      leftAnimator.Animate(canvas, enemy, 300);
+      
       ConsoleKeyInfo keyInfo;
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
         switch (keyInfo.Key) {
@@ -81,24 +76,13 @@ namespace Game {
             if (rightAnimator.IsAnimating()) {
               break;
             }
-
-            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
             
+            IObject bullet = player.Fire();
+                        
+            if (!rightAnimator.IsAnimating()) {
+              rightAnimator.Animate(canvas, bullet, 10);
+            }
             
-            Thread projectileThread = new Thread(new ThreadStart(() => {
-              IObject bullet = player.Fire();
-
-              ObjectRegistry.Instance.RegisterObj(bullet);
-
-              if (!rightAnimator.IsAnimating()) {
-                rightAnimator.Animate(canvas, bullet, 10);
-              }
-
-              ObjectRegistry.Instance.RemoveObj(bullet);
-            }));
-
-            projectileThread.Start();
-
             break;
         }
       }

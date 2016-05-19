@@ -17,8 +17,7 @@ namespace Game {
       RemovePos(obj.GetGraphic(), obj.GetX(), obj.GetY());
       WritePos(obj.GetGraphic(), obj.GetX(), obj.GetY());
     }
-
-
+    
     public void MoveObj(IObject obj, int incrX, int incrY) {
       if (ObjCanMove(obj, incrX, incrY)) {
         RemovePos(obj.GetGraphic(), obj.GetX(), obj.GetY());

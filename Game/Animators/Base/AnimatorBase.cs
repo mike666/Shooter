@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Game {
@@ -9,11 +10,14 @@ namespace Game {
     protected bool _IsAnimating = false;
 
     public virtual void Animate(ICanvas canvas, IObject obj, int speed) {
-      _IsAnimating = true;
+      Thread animationThread = new Thread(new ThreadStart(() => {
+        _IsAnimating = true;
+        DoAnimation(canvas, obj, speed);
 
-      DoAnimation(canvas, obj, speed);
-      
-      _IsAnimating = false;
+        _IsAnimating = false;
+      }));
+
+      animationThread.Start();
     }
 
     public abstract void DoAnimation(ICanvas canvas, IObject obj, int speed);
