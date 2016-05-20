@@ -2,7 +2,7 @@
 
 namespace Game {
   public interface IAnimator {
-    void Animate(ICanvas canvas, int speed, Action onAfterAnimate = null);
+    void Animate(ICanvas canvas, int speed, Action<IObjectCollision> onCollision = null, Action onAnimateFinish = null);
     bool IsAnimating();
     void Stop();
   }   

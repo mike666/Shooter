@@ -10,7 +10,7 @@ namespace Game {
            
       Console.BackgroundColor = ConsoleColor.White;
       Console.ForegroundColor = ConsoleColor.Black;
-      Console.Clear(); //Important!
+      Clear(); //Important!
     }
     
     public void RenderObj(IObject obj) {
@@ -74,8 +74,12 @@ namespace Game {
       return true;
     }
 
-    public void ReDrawObjects(List<IObject> objects) {
+    public void Clear() {
       Console.Clear();
+    }
+
+    public void ReDrawObjects(List<IObject> objects) {
+      Clear();
 
       foreach (IObject obj in objects) {
         RenderObj(obj);

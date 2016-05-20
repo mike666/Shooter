@@ -2,7 +2,8 @@
 
 namespace Game {
   class Game {
-        
+    private int _Points = 0;
+    
     public Game() {
 
     }
@@ -10,7 +11,7 @@ namespace Game {
     public void Start() {
       InitGame();
     }
-
+        
     public void InitGame() {
       ConsoleCanvas canvas = new ConsoleCanvas(new CollisionDetector());
       
@@ -28,30 +29,28 @@ namespace Game {
       ObjectRegistry.Instance.RegisterObj(block2);
       ObjectRegistry.Instance.RegisterObj(block3);
 
-      foreach (IObject obj in ObjectRegistry.Instance.GameObjects) {
-        canvas.RenderObj(obj);
-      }
-      
+      DrawCanvas(canvas);
+
       ConsoleKeyInfo keyInfo;
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
         switch (keyInfo.Key) {
           case ConsoleKey.UpArrow:
-            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            DrawCanvas(canvas);
             canvas.MoveObj(player, 0, -1);
             break;
 
           case ConsoleKey.RightArrow:
-            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            DrawCanvas(canvas);
             canvas.MoveObj(player, 1, 0);
             break;
 
           case ConsoleKey.DownArrow:
-            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            DrawCanvas(canvas);
             canvas.MoveObj(player, 0, 1);
             break;
 
           case ConsoleKey.LeftArrow:
-            canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+            DrawCanvas(canvas);
             canvas.MoveObj(player, -1, 0);
             break;
           case ConsoleKey.Spacebar:
@@ -65,7 +64,16 @@ namespace Game {
 
             IAnimator projectileAnimator = new ProjectileAnimator(bullet);
 
-            projectileAnimator.Animate(canvas, 10, () => {
+            projectileAnimator.Animate(canvas, 10, 
+              (collision) => {
+                _Points++;
+                projectileAnimator.Stop();
+                canvas.ClearObj(collision.Subject);
+                canvas.ClearObj(collision.Target);
+                ObjectRegistry.Instance.RemoveObj(collision.Target);
+                DrawCanvas(canvas);
+              },
+              () => {
               player.loadProjectile(new Bullet(0, 0));
               ObjectRegistry.Instance.RemoveObj(bullet);
             });
@@ -73,6 +81,17 @@ namespace Game {
             break;
         }
       }
+    }
+
+    private void DrawCanvas(ICanvas canvas) {
+      canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
+      canvas.WritePos("Points: " + _Points, 1, 0);
+      
+      if(_Points == 4) {
+        canvas.Clear();
+        canvas.WritePos("Duncan wins!", 30, 10);
+      }
+
     }
   }
 }

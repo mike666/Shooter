@@ -6,13 +6,13 @@ namespace Game {
     protected IObject _Obj = null;
     protected bool _IsAnimating = false;
     
-    public virtual void Animate(ICanvas canvas, int speed, Action onAfterAnimate = null) {
+    public virtual void Animate(ICanvas canvas, int speed, Action<IObjectCollision> onCollision = null, Action onAnimateFinish = null) {
       Thread animationThread = new Thread(new ThreadStart(() => {
         _IsAnimating = true;
-        DoAnimation(canvas, speed);
+        DoAnimation(canvas, speed, onCollision);
 
-        if(onAfterAnimate != null) {
-          onAfterAnimate.Invoke();
+        if(onAnimateFinish != null) {
+          onAnimateFinish.Invoke();
         }
 
         _IsAnimating = false;
@@ -21,7 +21,7 @@ namespace Game {
       animationThread.Start();
     }
 
-    public abstract void DoAnimation(ICanvas canvas, int speed);
+    public abstract void DoAnimation(ICanvas canvas, int speed, Action<IObjectCollision> onCollision = null);
 
     public virtual bool IsAnimating() {
       return _IsAnimating;
