@@ -1,37 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Game {
+﻿namespace Game {
   class Player : ObjectBase {
-    private IObject _Projectile;
+    private IObject _Projectile = null;
 
-    public Player(IObject projectile, int x, int y) : base(x, y) {
+    public Player(int x, int y) : base(x, y) {
       SetGraphic(":)");
-
-      _Projectile = projectile;
     }
 
-    public IObject Fire() {
-      _Projectile.SetPos(_X + Graphic.Length, _Y);
+    public void loadProjectile(IObject obj) {
+      _Projectile = obj;
+    }
 
-      return _Projectile;
+    public bool HasProjectile() {
+      return _Projectile != null;
+    }
 
-      /*
-      if (_Projectile.IsAnimating()) {
-        return;
+    public IObject FireProjectile() {
+      IObject projectile = _Projectile;
+      _Projectile = null;
+
+      if (projectile != null) {
+        projectile.SetPos(_X + Graphic.Length, _Y);
       }
 
-      _Projectile.SetPos(_X + Graphic.Length, _Y);
-    
-      Thread thread = new Thread(new ThreadStart(() => {
-        _Projectile.Animate();
-      }));
-
-      thread.Start();*/
+      return projectile;
     }
     
   }

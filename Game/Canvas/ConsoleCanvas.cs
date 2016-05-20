@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game {
   class ConsoleCanvas : ICanvas {
+    private ICollisionDetector _CollisionDetector = null;
 
-    public ConsoleCanvas() {
+    public ConsoleCanvas(ICollisionDetector collisionDetector) {
+      _CollisionDetector = collisionDetector;
+           
       Console.BackgroundColor = ConsoleColor.White;
       Console.ForegroundColor = ConsoleColor.Black;
       Console.Clear(); //Important!
@@ -18,7 +18,9 @@ namespace Game {
       WritePos(obj.GetGraphic(), obj.GetX(), obj.GetY());
     }
     
-    public void MoveObj(IObject obj, int incrX, int incrY) {
+    public IObjectCollision MoveObj(IObject obj, int incrX, int incrY) {
+      IObjectCollision collision = null;
+
       if (ObjCanMove(obj, incrX, incrY)) {
         RemovePos(obj.GetGraphic(), obj.GetX(), obj.GetY());
 
@@ -29,15 +31,10 @@ namespace Game {
 
         WritePos(obj.GetGraphic(), newX, newY);
 
-        ObjectCollision collision = CollisionDetector.Detect(obj);
-
-        if (collision != null) {
-          ClearObj(collision.Subject);
-          ClearObj(collision.Target);
-          
-          ObjectRegistry.Instance.RemoveObj(collision.Target);
-        }
+        collision = _CollisionDetector.Detect(obj);
       }
+
+      return collision;
     }
 
     /// <summary>
@@ -70,7 +67,7 @@ namespace Game {
         return false;
       }
 
-      if (newY < 0 || newY >= Console.WindowHeight) {
+      if (newY < 2 || newY >= Console.WindowHeight) {
         return false;
       }
 

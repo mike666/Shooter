@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Game {
   class Game {
-
-    private Player _Player = null;
-
+        
     public Game() {
 
     }
@@ -18,18 +11,11 @@ namespace Game {
       InitGame();
     }
 
-    /// <summary>`
-    /// Initiates the game by painting the background
-    /// and initiating the hero
-    /// </summary>
     public void InitGame() {
-      ConsoleCanvas canvas = new ConsoleCanvas();
-
-      IAnimator rightAnimator = new RightAnimator();
-      IAnimator leftAnimator = new LeftAnimator();
-
-      IObject projectile = new Bullet(0, 0);
-      Player player = new Player(projectile, 0, 0);
+      ConsoleCanvas canvas = new ConsoleCanvas(new CollisionDetector());
+      
+      Player player = new Player(0, 10);
+      player.loadProjectile(new Bullet(0, 0));
 
       IObject enemy = new Enemy(50, 5);
       IObject block1 = new Block(25, 10);
@@ -42,13 +28,9 @@ namespace Game {
       ObjectRegistry.Instance.RegisterObj(block2);
       ObjectRegistry.Instance.RegisterObj(block3);
 
-      canvas.RenderObj(player);
-      canvas.RenderObj(enemy);
-      canvas.RenderObj(block1);
-      canvas.RenderObj(block2);
-      canvas.RenderObj(block3);
-      
-      leftAnimator.Animate(canvas, enemy, 300);
+      foreach (IObject obj in ObjectRegistry.Instance.GameObjects) {
+        canvas.RenderObj(obj);
+      }
       
       ConsoleKeyInfo keyInfo;
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
@@ -73,15 +55,20 @@ namespace Game {
             canvas.MoveObj(player, -1, 0);
             break;
           case ConsoleKey.Spacebar:
-            if (rightAnimator.IsAnimating()) {
+            if (!player.HasProjectile()) {
               break;
             }
-            
-            IObject bullet = player.Fire();
-                        
-            if (!rightAnimator.IsAnimating()) {
-              rightAnimator.Animate(canvas, bullet, 10);
-            }
+
+            IObject bullet = player.FireProjectile();
+
+            ObjectRegistry.Instance.RegisterObj(bullet);
+
+            IAnimator projectileAnimator = new ProjectileAnimator(bullet);
+
+            projectileAnimator.Animate(canvas, 10, () => {
+              player.loadProjectile(new Bullet(0, 0));
+              ObjectRegistry.Instance.RemoveObj(bullet);
+            });
             
             break;
         }

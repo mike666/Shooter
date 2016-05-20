@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game {
   public interface IAnimator {
-    void Animate(ICanvas canvas, IObject obj, int speed);
+    void Animate(ICanvas canvas, int speed, Action onAfterAnimate = null);
     bool IsAnimating();
     void Stop();
   }   

@@ -45,16 +45,18 @@
   <ItemGroup>
     <Compile Include="Animators\Base\AnimatorBase.cs" />
     <Compile Include="Animators\LeftAnimator.cs" />
-    <Compile Include="Animators\RightAnimator.cs" />
+    <Compile Include="Animators\ProjectileAnimator.cs" />
+    <Compile Include="Collision\Interfaces\ICollisionDetector.cs" />
+    <Compile Include="Collision\Interfaces\IObjectCollision.cs" />
     <Compile Include="Objects\Base\ObjectBase.cs" />
     <Compile Include="Canvas\ConsoleCanvas.cs" />
     <Compile Include="Animators\Interfaces\IAnimator.cs" />
     <Compile Include="Canvas\Interfaces\ICanvas.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Objects\Interfaces\IObject.cs" />
-    <Compile Include="Lib\ObjectCollision.cs" />
+    <Compile Include="Collision\ObjectCollision.cs" />
     <Compile Include="Lib\ObjectRegistry.cs" />
-    <Compile Include="Lib\CollisionDetector.cs" />
+    <Compile Include="Collision\CollisionDetector.cs" />
     <Compile Include="Lib\Coordinate.cs" />
     <Compile Include="Objects\Block.cs" />
     <Compile Include="Objects\Bullet.cs" />
@@ -66,9 +68,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Base\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

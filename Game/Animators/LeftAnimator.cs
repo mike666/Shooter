@@ -1,16 +1,18 @@
 ﻿namespace Game {
   public class LeftAnimator : AnimatorBase {
-    public LeftAnimator() { }
+    public LeftAnimator(IObject obj) {
+      _Obj = obj;
+    }
 
-    public override void DoAnimation(ICanvas canvas, IObject obj, int speed) {
-      while (canvas.ObjCanMove(obj, -1, 0) && _IsAnimating) {
+    public override void DoAnimation(ICanvas canvas, int speed) {
+      while (canvas.ObjCanMove(_Obj, -1, 0) && _IsAnimating) {
 
-        canvas.MoveObj(obj, -1, 0);
+        canvas.MoveObj(_Obj, -1, 0);
 
         System.Threading.Thread.Sleep(speed);
       }
 
-      canvas.ClearObj(obj);
+      canvas.ClearObj(_Obj);
     }
   }
 }

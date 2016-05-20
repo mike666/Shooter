@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Game {
   /// <summary>
   /// Represents a map coordinate
   /// </summary>
-  class CollisionDetector {
+  class CollisionDetector : ICollisionDetector {
     
-    public static ObjectCollision Detect(IObject obj) {
+    public IObjectCollision Detect(IObject obj) {
       IObject target = ObjectRegistry.Instance.GameObjects.FirstOrDefault(c => c != obj && obj.GetX() == c.GetX() && obj.GetY() == c.GetY());
 
       if(target != null) {
