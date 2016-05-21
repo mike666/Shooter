@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Game {
   class Game {
-    private int _Points = 0;
-    
+    private int _PlayerPoints = 0;
+    private int _EnemyPoints = 0;
+
+    public int Dictionay { get; private set; }
+
     public Game() {
 
     }
@@ -11,55 +16,44 @@ namespace Game {
     public void Start() {
       InitGame();
     }
-        
+
     public void InitGame() {
       ConsoleCanvas canvas = new ConsoleCanvas(new CollisionDetector());
-      
+
       Player player = new Player(0, 10);
       player.loadProjectile(new Bullet(0, 0));
 
-      IObject enemy = new Enemy(50, 5);
-      IObject block1 = new Block(25, 10);
-      IObject block2 = new Block(25, 15);
-      IObject block3 = new Block(25, 17);
-            
-      ObjectRegistry.Instance.RegisterObj(player);
+      Enemy enemy = new Enemy(50, 5);
+      enemy.loadProjectile(new Bullet(0, 0));
+
       ObjectRegistry.Instance.RegisterObj(enemy);
-      ObjectRegistry.Instance.RegisterObj(block1);
-      ObjectRegistry.Instance.RegisterObj(block2);
-      ObjectRegistry.Instance.RegisterObj(block3);
+      ObjectRegistry.Instance.RegisterObj(player);
 
       DrawCanvas(canvas);
 
-      /*
-      LeftAnimator leftAnimator = new LeftAnimator(enemy);
-      leftAnimator.Animate(canvas, 200,
-        (collision) => {
-          leftAnimator.Stop();
-      });*/
-
+      EnemyController enemyController = new EnemyController(canvas, enemy, player);
+      enemyController.Start();
       
-
       ConsoleKeyInfo keyInfo;
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
         switch (keyInfo.Key) {
           case ConsoleKey.UpArrow:
-            DrawCanvas(canvas);
+            //     DrawCanvas(canvas);
             canvas.MoveObj(player, 0, -1);
             break;
 
           case ConsoleKey.RightArrow:
-            DrawCanvas(canvas);
+            //   DrawCanvas(canvas);
             canvas.MoveObj(player, 1, 0);
             break;
 
           case ConsoleKey.DownArrow:
-            DrawCanvas(canvas);
+            // DrawCanvas(canvas);
             canvas.MoveObj(player, 0, 1);
             break;
 
           case ConsoleKey.LeftArrow:
-            DrawCanvas(canvas);
+            // DrawCanvas(canvas);
             canvas.MoveObj(player, -1, 0);
             break;
           case ConsoleKey.Spacebar:
@@ -73,21 +67,37 @@ namespace Game {
 
             IAnimator projectileAnimator = new Animator(bullet);
 
-            projectileAnimator.Right(canvas, 10, null,
-              (collision) => {
-                _Points++;
-                projectileAnimator.Stop();
-                canvas.ClearObj(collision.Subject);
-                canvas.ClearObj(collision.Target);
-                ObjectRegistry.Instance.RemoveObj(collision.Target);
-                DrawCanvas(canvas);
-              },
-              () => {
-                canvas.ClearObj(bullet);
-                player.loadProjectile(new Bullet(0, 0));
-                ObjectRegistry.Instance.RemoveObj(bullet);
-            });
-            
+            Thread playerProjectileThread = new Thread(new ThreadStart(() => {
+              projectileAnimator.Right(canvas, 10, null,
+             (collision) => {
+               _PlayerPoints++;
+               projectileAnimator.Stop();
+               canvas.ClearObj(collision.Subject);
+               //ObjectRegistry.Instance.RemoveObj(collision.Target);
+               ObjectRegistry.Instance.RemoveObj(collision.Subject);
+
+               enemyController.GetObject().SetGraphic("R.I.P");
+               enemyController.Stop();
+
+               Enemy newEnemy = new Enemy(50, 5);
+               newEnemy.loadProjectile(new Bullet(0, 0));
+               ObjectRegistry.Instance.RegisterObj(newEnemy);
+
+               enemyController = new EnemyController(canvas, newEnemy, player);
+               enemyController.Start();
+                
+               DrawCanvas(canvas);
+             },
+             () => {
+               canvas.ClearObj(bullet);
+               player.loadProjectile(new Bullet(0, 0));
+               ObjectRegistry.Instance.RemoveObj(bullet);
+               DrawCanvas(canvas);
+             });
+            }));
+
+            playerProjectileThread.Start();
+
             break;
         }
       }
@@ -95,13 +105,7 @@ namespace Game {
 
     private void DrawCanvas(ICanvas canvas) {
       canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
-      canvas.WritePos("Points: " + _Points, 1, 0);
-      
-      if(_Points == 4) {
-        canvas.Clear();
-        canvas.WritePos("Duncan wins!", 30, 10);
-      }
-
+      canvas.WritePos(String.Format("Player: {0} Enemy: {1}", _PlayerPoints, _EnemyPoints), 1, 0);
     }
   }
 }

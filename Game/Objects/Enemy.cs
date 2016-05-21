@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Game {
-  class Enemy : ObjectBase {
+  public class Enemy : Shooter {
     
     public Enemy(int x, int y) : base(x, y) {
-      SetGraphic(":(");
+      SetGraphic("(:");
     }
   }
 }

@@ -46,6 +46,8 @@
     <Compile Include="Animators\Animator.cs" />
     <Compile Include="Collision\Interfaces\ICollisionDetector.cs" />
     <Compile Include="Collision\Interfaces\IObjectCollision.cs" />
+    <Compile Include="Lib\ShooterBuilder.cs" />
+    <Compile Include="Lib\EnemyController.cs" />
     <Compile Include="Objects\Base\ObjectBase.cs" />
     <Compile Include="Canvas\ConsoleCanvas.cs" />
     <Compile Include="Animators\Interfaces\IAnimator.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Lib\Coordinate.cs" />
     <Compile Include="Objects\Block.cs" />
     <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Objects\Shooter.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Objects\Enemy.cs" />
     <Compile Include="Program.cs" />

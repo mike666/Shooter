@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Game {
-  abstract class ObjectBase : IObject {
+  public abstract class ObjectBase : IObject {
     protected string _Graphic = "";
     protected int _X = 0;
     protected int _Y = 0;

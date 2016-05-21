@@ -41,6 +41,10 @@ namespace Game {
     /// Overpaint the old hero
     /// </summary>
     public void RemovePos(string graphic, int x, int y) {
+      if(!CheckCanvasBoundries(x, y)) {
+        return;
+      }
+
       Console.SetCursorPosition(x, y);
       Console.Write(new string(' ', graphic.Length + 2));
     }
@@ -50,11 +54,19 @@ namespace Game {
     /// Overpaint the old hero
     /// </summary>
     public void WritePos(string graphic, int x, int y) {
+      if (!CheckCanvasBoundries(x, y)) {
+        return;
+      }
+
       Console.SetCursorPosition(x, y);
       Console.Write(graphic);
     }
 
     public void ClearObj(IObject obj) {
+      if (!CheckCanvasBoundries(obj.GetX(), obj.GetY())) {
+        return;
+      }
+
       Console.SetCursorPosition(obj.GetX(), obj.GetY());
       Console.Write(new string(' ', obj.GetGraphic().Length + 2));
     }
@@ -63,11 +75,15 @@ namespace Game {
       int newX = obj.GetX() + incrX;
       int newY = obj.GetY() + incrY;
 
-      if (newX < 0 || newX >= Console.WindowWidth) {
+      return CheckCanvasBoundries(newX, newY);
+    }
+
+    private bool CheckCanvasBoundries(int x, int y) {
+      if (x < 0 || x >= Console.WindowWidth) {
         return false;
       }
 
-      if (newY < 2 || newY >= Console.WindowHeight) {
+      if (y < 2 || y >= Console.WindowHeight) {
         return false;
       }
 
