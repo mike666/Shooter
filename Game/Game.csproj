@@ -43,9 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animators\Base\AnimatorBase.cs" />
-    <Compile Include="Animators\LeftAnimator.cs" />
-    <Compile Include="Animators\ProjectileAnimator.cs" />
+    <Compile Include="Animators\Animator.cs" />
     <Compile Include="Collision\Interfaces\ICollisionDetector.cs" />
     <Compile Include="Collision\Interfaces\IObjectCollision.cs" />
     <Compile Include="Objects\Base\ObjectBase.cs" />

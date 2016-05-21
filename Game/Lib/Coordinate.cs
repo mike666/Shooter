@@ -8,8 +8,13 @@ namespace Game {
   /// <summary>
   /// Represents a map coordinate
   /// </summary>
-  class Coordinate {
+  public class Coordinate {
     public int X { get; set; } //Left
     public int Y { get; set; } //Top
+
+    public Coordinate(int x, int y) {
+      X = x;
+      Y = y;
+    }
   }
 }

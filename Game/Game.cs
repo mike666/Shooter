@@ -31,6 +31,15 @@ namespace Game {
 
       DrawCanvas(canvas);
 
+      /*
+      LeftAnimator leftAnimator = new LeftAnimator(enemy);
+      leftAnimator.Animate(canvas, 200,
+        (collision) => {
+          leftAnimator.Stop();
+      });*/
+
+      
+
       ConsoleKeyInfo keyInfo;
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
         switch (keyInfo.Key) {
@@ -62,9 +71,9 @@ namespace Game {
 
             ObjectRegistry.Instance.RegisterObj(bullet);
 
-            IAnimator projectileAnimator = new ProjectileAnimator(bullet);
+            IAnimator projectileAnimator = new Animator(bullet);
 
-            projectileAnimator.Animate(canvas, 10, 
+            projectileAnimator.Right(canvas, 10, null,
               (collision) => {
                 _Points++;
                 projectileAnimator.Stop();
@@ -74,8 +83,9 @@ namespace Game {
                 DrawCanvas(canvas);
               },
               () => {
-              player.loadProjectile(new Bullet(0, 0));
-              ObjectRegistry.Instance.RemoveObj(bullet);
+                canvas.ClearObj(bullet);
+                player.loadProjectile(new Bullet(0, 0));
+                ObjectRegistry.Instance.RemoveObj(bullet);
             });
             
             break;
