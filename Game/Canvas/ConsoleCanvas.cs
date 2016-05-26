@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game {
   class ConsoleCanvas : ICanvas {
@@ -7,7 +8,6 @@ namespace Game {
 
     public ConsoleCanvas(ICollisionDetector collisionDetector) {
       _CollisionDetector = collisionDetector;
-           
       Console.BackgroundColor = ConsoleColor.White;
       Console.ForegroundColor = ConsoleColor.Black;
       Clear(); //Important!
@@ -54,10 +54,6 @@ namespace Game {
     /// Overpaint the old hero
     /// </summary>
     public void WritePos(string graphic, int x, int y) {
-      if (!CheckCanvasBoundries(x, y)) {
-        return;
-      }
-
       Console.SetCursorPosition(x, y);
       Console.Write(graphic);
     }
@@ -97,7 +93,7 @@ namespace Game {
     public void ReDrawObjects(List<IObject> objects) {
       Clear();
 
-      foreach (IObject obj in objects) {
+      foreach (IObject obj in objects.ToList()) {
         RenderObj(obj);
       }
     }

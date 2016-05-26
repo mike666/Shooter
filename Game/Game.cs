@@ -29,7 +29,15 @@ namespace Game {
       ObjectRegistry.Instance.RegisterObj(enemy);
       ObjectRegistry.Instance.RegisterObj(player);
 
-      DrawCanvas(canvas);
+      Thread drawThread = new Thread(new ThreadStart(() => {
+        while (true) {
+          DrawCanvas(canvas);
+          System.Threading.Thread.Sleep(100);
+        }
+      }));
+
+      drawThread.Start();
+
 
       EnemyController enemyController = new EnemyController(canvas, enemy, player);
       enemyController.Start();
@@ -38,22 +46,18 @@ namespace Game {
       while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
         switch (keyInfo.Key) {
           case ConsoleKey.UpArrow:
-            //     DrawCanvas(canvas);
             canvas.MoveObj(player, 0, -1);
             break;
 
           case ConsoleKey.RightArrow:
-            //   DrawCanvas(canvas);
             canvas.MoveObj(player, 1, 0);
             break;
 
           case ConsoleKey.DownArrow:
-            // DrawCanvas(canvas);
             canvas.MoveObj(player, 0, 1);
             break;
 
           case ConsoleKey.LeftArrow:
-            // DrawCanvas(canvas);
             canvas.MoveObj(player, -1, 0);
             break;
           case ConsoleKey.Spacebar:
@@ -71,12 +75,15 @@ namespace Game {
               projectileAnimator.Right(canvas, 10, null,
              (collision) => {
                _PlayerPoints++;
+
+               enemyController.Stop();
+               
                projectileAnimator.Stop();
                canvas.ClearObj(collision.Subject);
-               //ObjectRegistry.Instance.RemoveObj(collision.Target);
+               canvas.ClearObj(collision.Target);
+               ObjectRegistry.Instance.RemoveObj(collision.Target);
                ObjectRegistry.Instance.RemoveObj(collision.Subject);
-
-               enemyController.GetObject().SetGraphic("R.I.P");
+               
                enemyController.Stop();
 
                Enemy newEnemy = new Enemy(50, 5);
@@ -85,14 +92,11 @@ namespace Game {
 
                enemyController = new EnemyController(canvas, newEnemy, player);
                enemyController.Start();
-                
-               DrawCanvas(canvas);
              },
              () => {
                canvas.ClearObj(bullet);
                player.loadProjectile(new Bullet(0, 0));
                ObjectRegistry.Instance.RemoveObj(bullet);
-               DrawCanvas(canvas);
              });
             }));
 

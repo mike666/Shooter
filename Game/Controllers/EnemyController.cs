@@ -6,7 +6,7 @@ namespace Game {
   /// <summary>
   ///
   /// </summary>
-  public class EnemyController {
+  public class EnemyController : ControllerBase {
     private ICanvas _Canvas = null;
     private Enemy _Enemy = null;
     private Player _Player = null;
@@ -19,46 +19,51 @@ namespace Game {
       _Player = player;
     }
     
-    public IObject GetObject() {
+    public override IObject GetObject() {
       return _Enemy;
     }
-
-    public void Start() {
+      
+    public override void Start() {
       Animator enemyAnimator = new Animator(_Enemy);
 
+      Dictionary<string, Action<ICanvas, int, int?, Action<IObjectCollision>, Action>> possibleDirections = GetPossibleDirections(enemyAnimator);
+           
       _EnemyThread = new Thread(new ThreadStart(() => {
         while (true) {
           Random rand = new Random();
 
-          int direction =  rand.Next(8);
-          int enemySpeed =  rand.Next(200, 500);
+          List<string> targetDirections = new List<string>();
+
+          if (_Enemy.GetY() > _Player.GetY()) {
+            targetDirections.Add("Up");
+
+            if (_Enemy.GetX() > _Player.GetX()) {
+              targetDirections.Add("Left");
+              targetDirections.Add("UpLeft");
+            } else {
+              targetDirections.Add("Right");
+              targetDirections.Add("UpRight");
+            }
+
+          } else {
+            targetDirections.Add("Down");
+
+            if (_Enemy.GetX() > _Player.GetX()) {
+              targetDirections.Add("Left");
+              targetDirections.Add("DownLeft");
+            } else {
+              targetDirections.Add("Right");
+              targetDirections.Add("DownRight");
+            }
+          }
+
+
+          string direction = targetDirections[rand.Next(targetDirections.Count)];
+          int speed =  rand.Next(100, 200);
           int? distance = rand.Next(10, 30);
 
-          switch (direction) {
-            case 0:
-              enemyAnimator.Left(_Canvas, enemySpeed, distance);
-              break;
-            case 1:
-              enemyAnimator.Right(_Canvas, enemySpeed, distance);
-              break;
-            case 2:
-              enemyAnimator.Up(_Canvas, enemySpeed, distance);
-              break;
-            case 3:
-              enemyAnimator.Down(_Canvas, enemySpeed, distance);
-              break;
-            case 4:
-              enemyAnimator.UpRight(_Canvas, enemySpeed, distance);
-              break;
-            case 5:
-              enemyAnimator.UpLeft(_Canvas, enemySpeed, distance);
-              break;
-            case 6:
-              enemyAnimator.DownRight(_Canvas, enemySpeed, distance);
-              break;
-            case 7:
-              enemyAnimator.DownLeft(_Canvas, enemySpeed, distance);
-              break;
+          if (possibleDirections.ContainsKey(direction)) {
+            possibleDirections[direction].Invoke(_Canvas, speed, distance, null, null);
           }
 
           System.Threading.Thread.Sleep(100);
@@ -74,7 +79,7 @@ namespace Game {
             // enemy has 25% chance of shooting player
             Random rand = new Random();
             if (rand.Next(4) != 0) {
-              continue;
+             // continue;
             }
 
             IObject bullet = _Enemy.FireProjectile();
@@ -94,6 +99,10 @@ namespace Game {
                });
           }
 
+          if(_EnemyThread.ThreadState == ThreadState.Aborted) {
+            break;
+          }
+
           System.Threading.Thread.Sleep(100);
         }
       }));
@@ -101,10 +110,8 @@ namespace Game {
       _ProjectileThread.Start();
     }
 
-    public void Stop() {
+    public override void Stop() {
       _EnemyThread.Abort();
-      _ProjectileThread.Abort();
     }
-
   }
 }
