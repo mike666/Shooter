@@ -75,11 +75,11 @@ namespace Game {
     }
 
     private bool CheckCanvasBoundries(int x, int y) {
-      if (x < 0 || x >= Console.WindowWidth) {
+      if (x < 0 || x >= CanvasWidth()) {
         return false;
       }
 
-      if (y < 2 || y >= Console.WindowHeight) {
+      if (y < 2 || y >= CanvasHeight()) {
         return false;
       }
 
@@ -96,6 +96,14 @@ namespace Game {
       foreach (IObject obj in objects.ToList()) {
         RenderObj(obj);
       }
+    }
+
+    public int CanvasWidth() {
+      return Console.WindowWidth;
+    }
+
+    public int CanvasHeight() {
+      return Console.WindowHeight;
     }
   }
 }

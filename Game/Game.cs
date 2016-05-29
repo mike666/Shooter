@@ -19,7 +19,7 @@ namespace Game {
 
     public void InitGame() {
       ConsoleCanvas canvas = new ConsoleCanvas(new CollisionDetector());
-
+      
       Player player = new Player(0, 10);
       player.loadProjectile(new Bullet(0, 0));
 
@@ -28,6 +28,12 @@ namespace Game {
 
       ObjectRegistry.Instance.RegisterObj(enemy);
       ObjectRegistry.Instance.RegisterObj(player);
+            
+      PlayerController playerController = new PlayerController(canvas, player);
+      playerController.Start();
+       
+      AIShooterController enemyController = new AIShooterController(canvas, enemy, player);
+      enemyController.Start();
 
       Thread drawThread = new Thread(new ThreadStart(() => {
         while (true) {
@@ -38,73 +44,6 @@ namespace Game {
 
       drawThread.Start();
 
-
-      EnemyController enemyController = new EnemyController(canvas, enemy, player);
-      enemyController.Start();
-      
-      ConsoleKeyInfo keyInfo;
-      while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape) {
-        switch (keyInfo.Key) {
-          case ConsoleKey.UpArrow:
-            canvas.MoveObj(player, 0, -1);
-            break;
-
-          case ConsoleKey.RightArrow:
-            canvas.MoveObj(player, 1, 0);
-            break;
-
-          case ConsoleKey.DownArrow:
-            canvas.MoveObj(player, 0, 1);
-            break;
-
-          case ConsoleKey.LeftArrow:
-            canvas.MoveObj(player, -1, 0);
-            break;
-          case ConsoleKey.Spacebar:
-            if (!player.HasProjectile()) {
-              break;
-            }
-
-            IObject bullet = player.FireProjectile();
-
-            ObjectRegistry.Instance.RegisterObj(bullet);
-
-            IAnimator projectileAnimator = new Animator(bullet);
-
-            Thread playerProjectileThread = new Thread(new ThreadStart(() => {
-              projectileAnimator.Right(canvas, 10, null,
-             (collision) => {
-               _PlayerPoints++;
-
-               enemyController.Stop();
-               
-               projectileAnimator.Stop();
-               canvas.ClearObj(collision.Subject);
-               canvas.ClearObj(collision.Target);
-               ObjectRegistry.Instance.RemoveObj(collision.Target);
-               ObjectRegistry.Instance.RemoveObj(collision.Subject);
-               
-               enemyController.Stop();
-
-               Enemy newEnemy = new Enemy(50, 5);
-               newEnemy.loadProjectile(new Bullet(0, 0));
-               ObjectRegistry.Instance.RegisterObj(newEnemy);
-
-               enemyController = new EnemyController(canvas, newEnemy, player);
-               enemyController.Start();
-             },
-             () => {
-               canvas.ClearObj(bullet);
-               player.loadProjectile(new Bullet(0, 0));
-               ObjectRegistry.Instance.RemoveObj(bullet);
-             });
-            }));
-
-            playerProjectileThread.Start();
-
-            break;
-        }
-      }
     }
 
     private void DrawCanvas(ICanvas canvas) {

@@ -10,5 +10,8 @@ namespace Game {
     void WritePos(string graphic, int x, int y);
     void RemovePos(string graphic, int x, int y);
     void ReDrawObjects(List<IObject> objects);
+    int CanvasWidth();
+    int CanvasHeight();
+
   }   
 }

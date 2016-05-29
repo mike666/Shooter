@@ -46,10 +46,11 @@
     <Compile Include="Animators\Animator.cs" />
     <Compile Include="Collision\Interfaces\ICollisionDetector.cs" />
     <Compile Include="Collision\Interfaces\IObjectCollision.cs" />
-    <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\AIControllerBase.cs" />
+    <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\Interfaces\IController.cs" />
-    <Compile Include="Lib\ShooterBuilder.cs" />
-    <Compile Include="Controllers\EnemyController.cs" />
+    <Compile Include="Controllers\AIShooterController.cs" />
+    <Compile Include="Lib\ObjectStatus.cs" />
     <Compile Include="Objects\Base\ObjectBase.cs" />
     <Compile Include="Canvas\ConsoleCanvas.cs" />
     <Compile Include="Animators\Interfaces\IAnimator.cs" />

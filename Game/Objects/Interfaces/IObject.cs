@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Game {
   public interface IObject {
+    ObjectStatus Status { get; set; }
+
     int GetX();
     int GetY();
 

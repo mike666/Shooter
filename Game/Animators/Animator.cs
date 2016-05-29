@@ -11,6 +11,10 @@ namespace Game {
     }
     
     public virtual bool IsAnimating() {
+      if (_Obj.Status != ObjectStatus.Active) {
+        Stop();
+      }
+
       return _IsAnimating;
     }
 
@@ -52,10 +56,11 @@ namespace Game {
 
 
     public virtual void Animate(ICanvas canvas, Coordinate cooridate, int speed, int? units = null, Action<IObjectCollision> onCollision = null, Action onAnimateFinish = null) {
-        _IsAnimating = true;
-        int unitCount = 0;
+      _IsAnimating = true;
 
-        while (canvas.ObjCanMove(_Obj, cooridate.X, cooridate.Y) && _IsAnimating) {
+      int unitCount = 0;
+
+        while (canvas.ObjCanMove(_Obj, cooridate.X, cooridate.Y) && IsAnimating()) {
           unitCount++;
 
           IObjectCollision collision = canvas.MoveObj(_Obj, cooridate.X, cooridate.Y);

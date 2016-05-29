@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Game {
   public abstract class ObjectBase : IObject {
+    
+    public ObjectStatus Status { get; set; }
+
     protected string _Graphic = "";
     protected int _X = 0;
     protected int _Y = 0;
@@ -17,6 +20,8 @@ namespace Game {
     public ObjectBase(int x, int y) {
       _X = x;
       _Y = y;
+
+      Status = ObjectStatus.Active;
     }
     
     public void SetGraphic(string graphic) {

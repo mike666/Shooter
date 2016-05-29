@@ -6,7 +6,7 @@ namespace Game {
   /// <summary>
   ///
   /// </summary>
-  public abstract class ControllerBase : IController {
+  public abstract class AIControllerBase : IController {
      
     protected virtual Dictionary<string, Action<ICanvas, int, int?, Action<IObjectCollision>, Action>> GetPossibleDirections(IAnimator animator) {
       return new Dictionary<string, Action<ICanvas, int, int?, Action<IObjectCollision>, Action>> {

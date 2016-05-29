@@ -6,38 +6,43 @@ namespace Game {
   /// <summary>
   ///
   /// </summary>
-  public class EnemyController : ControllerBase {
+  public class AIShooterController : AIControllerBase {
     private ICanvas _Canvas = null;
-    private Enemy _Enemy = null;
+    private Shooter _Obj = null;
     private Player _Player = null;
-    private Thread _EnemyThread = null;
+    private Thread _ObjThread = null;
     private Thread _ProjectileThread = null;
 
-    public EnemyController(ICanvas canvas, Enemy enemy, Player player) {
+    public AIShooterController(ICanvas canvas, Shooter obj, Player player) {
       _Canvas = canvas;
-      _Enemy = enemy;
+      _Obj = obj;
       _Player = player;
     }
     
     public override IObject GetObject() {
-      return _Enemy;
+      return _Obj;
     }
       
     public override void Start() {
-      Animator enemyAnimator = new Animator(_Enemy);
+      Animator enemyAnimator = new Animator(_Obj);
 
       Dictionary<string, Action<ICanvas, int, int?, Action<IObjectCollision>, Action>> possibleDirections = GetPossibleDirections(enemyAnimator);
            
-      _EnemyThread = new Thread(new ThreadStart(() => {
+      _ObjThread = new Thread(new ThreadStart(() => {
         while (true) {
+          if(_Obj.Status == ObjectStatus.InActive) {
+            Stop();
+            break;
+          }
+
           Random rand = new Random();
 
           List<string> targetDirections = new List<string>();
 
-          if (_Enemy.GetY() > _Player.GetY()) {
+          if (_Obj.GetY() > _Player.GetY()) {
             targetDirections.Add("Up");
 
-            if (_Enemy.GetX() > _Player.GetX()) {
+            if (_Obj.GetX() > _Player.GetX()) {
               targetDirections.Add("Left");
               targetDirections.Add("UpLeft");
             } else {
@@ -48,7 +53,7 @@ namespace Game {
           } else {
             targetDirections.Add("Down");
 
-            if (_Enemy.GetX() > _Player.GetX()) {
+            if (_Obj.GetX() > _Player.GetX()) {
               targetDirections.Add("Left");
               targetDirections.Add("DownLeft");
             } else {
@@ -56,12 +61,17 @@ namespace Game {
               targetDirections.Add("DownRight");
             }
           }
-
-
+          
           string direction = targetDirections[rand.Next(targetDirections.Count)];
-          int speed =  rand.Next(100, 200);
+          int speed = rand.Next(100, 200);
           int? distance = rand.Next(10, 30);
 
+          // check canvas boundry, player can't move further than half the width of screen
+          if (direction.Contains("Left") && _Obj.GetX() - distance < (_Canvas.CanvasWidth() / 2)) {
+            possibleDirections["Right"].Invoke(_Canvas, speed, distance, null, null);
+            continue;
+          }
+                    
           if (possibleDirections.ContainsKey(direction)) {
             possibleDirections[direction].Invoke(_Canvas, speed, distance, null, null);
           }
@@ -70,19 +80,19 @@ namespace Game {
         }
       }));
 
-      _EnemyThread.Start();
+      _ObjThread.Start();
 
       _ProjectileThread = new Thread(new ThreadStart(() => {
         while (true) {
-          if (_Enemy.GetY() == _Player.GetY()) {
+          if (_Obj.GetY() == _Player.GetY()) {
 
             // enemy has 25% chance of shooting player
             Random rand = new Random();
-            if (rand.Next(4) != 0) {
+            if (rand.Next(5) != 0) {
              // continue;
             }
 
-            IObject bullet = _Enemy.FireProjectile();
+            IObject bullet = _Obj.FireProjectile();
 
             ObjectRegistry.Instance.RegisterObj(bullet);
 
@@ -94,12 +104,12 @@ namespace Game {
                 },
                () => {
                  _Canvas.ClearObj(bullet);
-                 _Enemy.loadProjectile(new Bullet(0, 0));
+                 _Obj.loadProjectile(new Bullet(0, 0));
                  ObjectRegistry.Instance.RemoveObj(bullet);
                });
           }
 
-          if(_EnemyThread.ThreadState == ThreadState.Aborted) {
+          if(_Obj.Status != ObjectStatus.Active) {
             break;
           }
 
@@ -111,7 +121,7 @@ namespace Game {
     }
 
     public override void Stop() {
-      _EnemyThread.Abort();
+      _ObjThread.Abort();
     }
   }
 }
