@@ -4,10 +4,6 @@ using System.Threading;
 
 namespace Game {
   class Game {
-    private int _PlayerPoints = 0;
-    private int _EnemyPoints = 0;
-
-    public int Dictionay { get; private set; }
 
     public Game() {
 
@@ -25,7 +21,7 @@ namespace Game {
 
       Enemy enemy = new Enemy(50, 5);
       enemy.loadProjectile(new Bullet(0, 0));
-
+            
       ObjectRegistry.Instance.RegisterObj(enemy);
       ObjectRegistry.Instance.RegisterObj(player);
             
@@ -48,7 +44,7 @@ namespace Game {
 
     private void DrawCanvas(ICanvas canvas) {
       canvas.ReDrawObjects(ObjectRegistry.Instance.GameObjects);
-      canvas.WritePos(String.Format("Player: {0} Enemy: {1}", _PlayerPoints, _EnemyPoints), 1, 0);
+      canvas.WritePos(String.Format("Points: {0} Lives: {1}", GameState.Instance.PlayerPoints, GameState.Instance.PlayerLives), 1, 0);
     }
   }
 }

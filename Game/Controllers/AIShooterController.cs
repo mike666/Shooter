@@ -86,10 +86,10 @@ namespace Game {
         while (true) {
           if (_Obj.GetY() == _Player.GetY()) {
 
-            // enemy has 25% chance of shooting player
+            // enemy has 10% chance of shooting player when in range
             Random rand = new Random();
-            if (rand.Next(5) != 0) {
-             // continue;
+            if (rand.Next(10) != 0) {
+              continue;
             }
 
             IObject bullet = _Obj.FireProjectile();
@@ -100,7 +100,9 @@ namespace Game {
 
             projectileAnimator.Left(_Canvas, 10, null,
                 (collision) => {
-               //   projectileAnimator.Stop();
+                  if(collision.Target is Player) {
+                    GameState.Instance.PlayerLives--;
+                  }
                 },
                () => {
                  _Canvas.ClearObj(bullet);

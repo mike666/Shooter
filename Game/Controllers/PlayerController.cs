@@ -67,6 +67,10 @@ namespace Game {
                  _Canvas.ClearObj(collision.Target);
                  collision.Target.Status = ObjectStatus.InActive;
 
+                 if(collision.Target is Enemy) {
+                   GameState.Instance.PlayerPoints++;
+                 }
+
                  ObjectRegistry.Instance.RemoveObj(collision.Target);
                  ObjectRegistry.Instance.RemoveObj(collision.Subject);
                },

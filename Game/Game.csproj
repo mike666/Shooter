@@ -50,6 +50,7 @@
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\Interfaces\IController.cs" />
     <Compile Include="Controllers\AIShooterController.cs" />
+    <Compile Include="Lib\GameState.cs" />
     <Compile Include="Lib\ObjectStatus.cs" />
     <Compile Include="Objects\Base\ObjectBase.cs" />
     <Compile Include="Canvas\ConsoleCanvas.cs" />
