@@ -33,7 +33,7 @@ namespace Game {
 
             case ConsoleKey.RightArrow:
               // check canvas boundry, player can't move further than half the width of screen
-              if(_Player.GetX() + 1 > (_Canvas.CanvasWidth() / 2)) {
+              if(_Player.GetX() + 1 > (_Canvas.CanvasWidth() / 3)) {
                 break;
               }
               
@@ -64,14 +64,11 @@ namespace Game {
 
                  projectileAnimator.Stop();
                  _Canvas.ClearObj(collision.Subject);
-                 _Canvas.ClearObj(collision.Target);
-                 collision.Target.Status = ObjectStatus.InActive;
 
-                 if(collision.Target is Enemy) {
-                   GameState.Instance.PlayerPoints++;
+                 if (collision.Target is Enemy) {
+                   collision.Target.Status = ObjectStatus.Shot;
                  }
 
-                 ObjectRegistry.Instance.RemoveObj(collision.Target);
                  ObjectRegistry.Instance.RemoveObj(collision.Subject);
                },
                () => {
@@ -89,37 +86,6 @@ namespace Game {
       }));
 
       _ObjThread.Start();
-
-      _ProjectileThread = new Thread(new ThreadStart(() => {
-        while (true) {
-          if (_Player.GetY() == _Player.GetY()) {
-
-            // enemy has 25% chance of shooting player
-            Random rand = new Random();
-            if (rand.Next(5) != 0) {
-              // continue;
-            }
-
-            IObject bullet = _Player.FireProjectile();
-
-            ObjectRegistry.Instance.RegisterObj(bullet);
-
-            Animator projectileAnimator = new Animator(bullet);
-
-            projectileAnimator.Left(_Canvas, 10, null,
-                (collision) => {
-                  //   projectileAnimator.Stop();
-                },
-               () => {
-                 _Canvas.ClearObj(bullet);
-                 _Player.loadProjectile(new Bullet(0, 0));
-                 ObjectRegistry.Instance.RemoveObj(bullet);
-               });
-          }
-
-          System.Threading.Thread.Sleep(100);
-        }
-      }));
     }
 
     public void Stop() {

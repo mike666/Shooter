@@ -15,31 +15,42 @@ namespace Game {
 
     public void InitGame() {
       ConsoleCanvas canvas = new ConsoleCanvas(new CollisionDetector());
-      
-      Player player = new Player(0, 10);
-      player.loadProjectile(new Bullet(0, 0));
+                
+      PlayerController playerController = PlayerBuilder.Build(0, 10, canvas);
+      AIShooterController enemyController = EnemyBuilder.Build(50, 5, canvas, playerController.GetObject() as Player);
 
-      Enemy enemy = new Enemy(50, 5);
-      enemy.loadProjectile(new Bullet(0, 0));
-            
-      ObjectRegistry.Instance.RegisterObj(enemy);
-      ObjectRegistry.Instance.RegisterObj(player);
-            
-      PlayerController playerController = new PlayerController(canvas, player);
       playerController.Start();
-       
-      AIShooterController enemyController = new AIShooterController(canvas, enemy, player);
       enemyController.Start();
 
-      Thread drawThread = new Thread(new ThreadStart(() => {
+      Thread gameLoop = new Thread(new ThreadStart(() => {
         while (true) {
           DrawCanvas(canvas);
           System.Threading.Thread.Sleep(100);
+
+          if(enemyController.GetObject().Status == ObjectStatus.Shot) {
+            enemyController.GetObject().SetGraphic("X");
+            
+            GameState.Instance.PlayerPoints++;
+
+            DrawCanvas(canvas);
+            System.Threading.Thread.Sleep(1000);
+            ObjectRegistry.Instance.RemoveObj(enemyController.GetObject());
+
+            enemyController = EnemyBuilder.Build(50, 5, canvas, playerController.GetObject() as Player);
+            enemyController.Start();
+          }
+
+          if (playerController.GetObject().Status == ObjectStatus.Shot) {
+            playerController.GetObject().SetPos(0, 10);
+            playerController.GetObject().Status = ObjectStatus.Active;
+            GameState.Instance.PlayerLives--;
+
+            DrawCanvas(canvas);
+          }
         }
       }));
 
-      drawThread.Start();
-
+      gameLoop.Start();
     }
 
     private void DrawCanvas(ICanvas canvas) {

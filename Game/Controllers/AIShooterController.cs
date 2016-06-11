@@ -67,7 +67,7 @@ namespace Game {
           int? distance = rand.Next(10, 30);
 
           // check canvas boundry, player can't move further than half the width of screen
-          if (direction.Contains("Left") && _Obj.GetX() - distance < (_Canvas.CanvasWidth() / 2)) {
+          if (direction.Contains("Left") && _Obj.GetX() - distance < (_Canvas.CanvasWidth() / 3)) {
             possibleDirections["Right"].Invoke(_Canvas, speed, distance, null, null);
             continue;
           }
@@ -88,7 +88,7 @@ namespace Game {
 
             // enemy has 10% chance of shooting player when in range
             Random rand = new Random();
-            if (rand.Next(10) != 0) {
+            if (rand.Next(30) != 0) {
               continue;
             }
 
@@ -101,7 +101,7 @@ namespace Game {
             projectileAnimator.Left(_Canvas, 10, null,
                 (collision) => {
                   if(collision.Target is Player) {
-                    GameState.Instance.PlayerLives--;
+                    collision.Target.Status = ObjectStatus.Shot;
                   }
                 },
                () => {

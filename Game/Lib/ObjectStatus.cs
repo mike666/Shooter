@@ -5,5 +5,5 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Game {
-  public enum ObjectStatus { Active, InActive }
+  public enum ObjectStatus { Active, InActive, Shot }
 }
