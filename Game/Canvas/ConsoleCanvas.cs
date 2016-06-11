@@ -58,6 +58,16 @@ namespace Game {
       Console.Write(graphic);
     }
 
+    /// <summary>
+    /// Overpaint the old hero
+    /// </summary>
+    public void WriteCenterPosX(string graphic, int y) {
+      int centerX = (CanvasWidth() / 2) - (graphic.Length / 2);
+
+      Console.SetCursorPosition(centerX, y);
+      Console.Write(graphic);
+    }
+
     public void ClearObj(IObject obj) {
       if (!CheckCanvasBoundries(obj.GetX(), obj.GetY())) {
         return;

@@ -88,7 +88,7 @@ namespace Game {
 
             // enemy has 10% chance of shooting player when in range
             Random rand = new Random();
-            if (rand.Next(30) != 0) {
+            if (rand.Next(15) != 0) {
               continue;
             }
 

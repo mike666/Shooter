@@ -12,6 +12,10 @@ namespace Game {
     private static GameState _Singleton = null;
 
     private GameState() {
+      Reset();
+    }
+
+    public void Reset() {
       PlayerPoints = 0;
       PlayerLives = 3;
     }

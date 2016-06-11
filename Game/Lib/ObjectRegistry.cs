@@ -18,6 +18,10 @@ namespace Game {
       }
     }
 
+    public void Reset() {
+      _GameObjects = new List<IObject>();
+    }
+
     public List<IObject> GameObjects {
       get { return _GameObjects; }
     }
